@@ -32,7 +32,7 @@ def make_tweet(text, time, lat, lon):
 
 def tweet_words(tweet):
     """Return a list of the words in the text of a tweet."""
-    return tweet["text"]
+    return listacao(tweet["text"])
     
 
 def tweet_time(tweet):
@@ -67,7 +67,7 @@ def listacao(string):
             splited.append(palavra)
             palavra = ""
         contador -= 1
-        if contador == 0:
+        if contador == 0 and len(palavra) > 0:
             splited.append(palavra)
     return splited
     
@@ -83,8 +83,8 @@ def extract_words(text):
     >>> extract_words("paperclips! they're so awesome, cool, & useful!")
     ['paperclips', 'they', 're', 'so', 'awesome', 'cool', 'useful']
     """
-    string = apenasPalavras(text)
-    return listacao(string) 
+    stringLista = listacao(apenasPalavras(text)) 
+    return stringLista
 
 def make_sentiment(value):
     """Return a sentiment, which represents a value that may not exist.
@@ -99,16 +99,21 @@ def make_sentiment(value):
     0.2
     """
     assert value is None or (value >= -1 and value <= 1), 'Illegal value'
-    "*** YOUR CODE HERE ***"
+    return value
 
 def has_sentiment(s):
     """Return whether sentiment s has a value."""
-    "*** YOUR CODE HERE ***"
+    if s == None:
+        return False
+    if s >= -1 or s <= 1:
+        return True
+    else:
+        return False
 
 def sentiment_value(s):
     """Return the value of a sentiment s."""
     assert has_sentiment(s), 'No sentiment value'
-    "*** YOUR CODE HERE ***"
+    return s
 
 def get_word_sentiment(word):
     """Return a sentiment representing the degree of positive or negative
@@ -143,9 +148,18 @@ def analyze_tweet_sentiment(tweet):
     >>> has_sentiment(analyze_tweet_sentiment(no_sentiment))
     False
     """
-    average = make_sentiment(None)
-    "*** YOUR CODE HERE ***"
-    return average
+    average = 0
+    mediador = 0
+    words = extract_words(tweet["text"])
+    for palavra in words:
+        valor = get_word_sentiment(palavra)
+        if valor != None:
+            mediador += 1
+            average += valor
+    if average != 0:
+        return average/mediador
+    else:
+        return make_sentiment(None)
 
 
 # Phase 2: The Geometry of Maps
@@ -383,4 +397,3 @@ def run(*args):
     for name, execute in args.__dict__.items():
         if name != 'text' and execute:
             globals()[name](' '.join(args.text))
-
