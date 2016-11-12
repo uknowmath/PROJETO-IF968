@@ -164,6 +164,26 @@ def analyze_tweet_sentiment(tweet):
 
 # Phase 2: The Geometry of Maps
 
+def media(mediador):
+    indice = len(mediador)-1
+    top = 0
+    base = len(mediador)
+    while indice >= 0:
+        top += mediador[indice]
+        indice -= 1
+    media = top/base
+    return media
+
+def areaPolygon(coord):
+    indice = len(coord)-1
+    colunaX = 0
+    colunaY = 0
+    while indice > 0:
+        colunaX += coord[indice][1]*coord[indice-1][0]
+        colunaY += coord[indice][0]*coord[indice-1][1]
+        indice -= 1
+    return (colunaY-colunaX)/2
+
 def find_centroid(polygon):
     """Find the centroid of a polygon.
 
@@ -184,7 +204,22 @@ def find_centroid(polygon):
     >>> find_centroid([p1, p2, p1])
     (1, 2, 0)
     """
-    "*** YOUR CODE HERE ***"
+    cont = len(polygon)-1
+    cont2 = 0
+    listaMedia1 = []
+    listaMedia2 = []
+    for cord in polygon:
+        if cont2 < cont:
+            listaMedia1.append(cord[0])
+            listaMedia2.append(cord[1])
+        cont2 += 1
+    mediaLat = media(listaMedia1)
+    mediaLon = media(listaMedia2)
+    area = abs(areaPolygon(polygon))
+    if area > 0:
+        return (mediaLat,mediaLon,area)
+    elif area == 0:
+        return (polygon[0][0],polygon[0][1],int(area))
 
 def find_center(polygons):
     """Compute the geographic center of a state, averaged over its polygons.
