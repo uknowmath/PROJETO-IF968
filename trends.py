@@ -182,7 +182,7 @@ def areaPolygon(coord):
         colunaX += coord[indice][1]*coord[indice-1][0]
         colunaY += coord[indice][0]*coord[indice-1][1]
         indice -= 1
-    return (colunaY-colunaX)/2
+    return abs((colunaY-colunaX)/2)
 
 def find_centroid(polygon):
     """Find the centroid of a polygon.
@@ -221,6 +221,30 @@ def find_centroid(polygon):
     elif area == 0:
         return (polygon[0][0],polygon[0][1],int(area))
 
+def mediaLatLonArea(polig):
+    cont = len(polig)
+    cont2 = 0
+    listaMedia1 = []
+    listaMedia2 = []
+    for cord in polig:
+        if cont2 < cont:
+            listaMedia1.append(cord[0])
+            listaMedia2.append(cord[1])
+        cont2 += 1
+    somaLat = 0
+    somaLon = 0
+    for indice in range(len(polig) - 1):
+        mediador = listaMedia1[indice] * listaMedia2[indice + 1] - listaMedia1[indice + 1] * listaMedia2[indice]
+        somaLat += (listaMedia1[indice] +listaMedia1[indice + 1]) * mediador
+        somaLon += (listaMedia2[indice] + listaMedia2[indice + 1]) * mediador
+    area = abs(areaPolygon(polig))
+    if area == 0:
+        return (polig[0][0], polig[0][1], 0)
+    else:
+        mediaLat = (1 / (6 * area)) * somaLat
+        mediaLon = (1 / (6 * area)) * somaLon
+        return (mediaLat,mediaLon,area)
+
 def find_center(polygons):
     """Compute the geographic center of a state, averaged over its polygons.
 
@@ -242,8 +266,21 @@ def find_center(polygons):
     >>> round(longitude(hi), 5)
     -156.21763
     """
-    "*** YOUR CODE HERE ***"
-
+    latFinal = 0
+    lonFinal = 0
+    area = 0
+    for coord in polygons:
+        pedaços = mediaLatLonArea(coord)
+        pedaçoLat = pedaços[0]
+        pedaçoLon = pedaços[1]
+        pedaçoArea = pedaços[2]
+        latFinal += pedaçoLat*pedaçoArea
+        lonFinal += pedaçoLon*pedaçoArea
+        area += pedaçoArea
+    latFinal = latFinal / area
+    lonFinal = lonFinal / area
+ 
+    return make_position(latFinal, lonFinal)
 
 # Phase 3: The Mood of the Nation
 
