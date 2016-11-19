@@ -350,7 +350,17 @@ def most_talkative_state(term):
     'NJ'
     """
     tweets = load_tweets(make_tweet, term)  # A list of tweets containing term
-    "*** YOUR CODE HERE ***"
+    grupos = group_tweets_by_state(tweets)
+    Mstates = [grupos.keys()][0]
+    comprimentoStates = len(grupos[Mstates])
+
+    for state, tweets in grupos.items():
+        temp = len(tweets)
+        if temp > comprimentoStates:
+            comprimentoStates = temp
+            Mstates = state
+    return Mstates
+        
 
 def average_sentiments(tweets_by_state):
     """Calculate the average sentiment of the states by averaging over all
@@ -365,7 +375,16 @@ def average_sentiments(tweets_by_state):
     tweets_by_state -- A dictionary from state names to lists of tweets
     """
     averaged_state_sentiments = {}
-    "*** YOUR CODE HERE ***"
+    for key in tweets_by_state.keys():
+        sinal = 0
+        average = 0
+        for state in tweets_by_state[key]:
+            sentimento = analyze_tweet_sentiment(state)
+            if sentimento != None:
+                average += sentimento
+                sinal = 1
+        if sinal == 1:
+            averaged_state_sentiments[key] = average
     return averaged_state_sentiments
 
 
