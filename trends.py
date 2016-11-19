@@ -32,7 +32,7 @@ def make_tweet(text, time, lat, lon):
 
 def tweet_words(tweet):
     """Return a list of the words in the text of a tweet."""
-    return listacao(tweet["text"])
+    return extract_words(tweet["text"])
     
 
 def tweet_time(tweet):
@@ -405,7 +405,13 @@ def group_tweets_by_hour(tweets):
     tweets -- A list of tweets to be grouped
     """
     tweets_by_hour = {}
-    "*** YOUR CODE HERE ***"
+    for tweet in tweets:
+        horaTweet = tweet_time(tweet).hour
+        if horaTweet not in tweets_by_hour:
+            tweets_by_hour[horaTweet] = [tweet]
+        else:
+            tweets_by_hour[horaTweet].append(tweet)
+ 
     return tweets_by_hour
 
 
